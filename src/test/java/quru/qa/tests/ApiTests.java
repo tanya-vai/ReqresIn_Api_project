@@ -1,6 +1,7 @@
 package quru.qa.tests;
 
 import org.junit.jupiter.api.Test;
+import quru.qa.models.lombok.RegistrationBodyLombokModel;
 import quru.qa.models.lombok.UserBodyLombokModel;
 import quru.qa.models.pojo.RegistrationBodyPojoModel;
 import quru.qa.models.pojo.RegistrationResponsePojoModel;
@@ -11,9 +12,11 @@ import java.io.File;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static quru.qa.specs.CreationSpecs.creationRequestSpec;
 import static quru.qa.specs.CreationSpecs.creationResponseSpec;
+import static quru.qa.specs.ListOfUsersSpec.*;
 import static quru.qa.specs.RegistrationSpecs.registrationRequestSpec;
 import static quru.qa.specs.RegistrationSpecs.registrationResponseSpec;
 
@@ -31,6 +34,19 @@ public class ApiTests {
                 .log().body()
                 .statusCode(200)
                 .body("data.first_name", is("Tracey"));
+    }
+
+    @Test
+    void getListOfUserWithGroovyTest() {
+
+        given()
+                .spec(listOfUsersRequestSpec)
+                .when()
+                .get()
+                .then()
+                .spec(listOfUsersResponseSpec)
+                .body("data.findAll{it.first_name=~ /e$/}.first_name.flatten()",
+                        hasItem("Eve"));
     }
 
     @Test
@@ -87,6 +103,27 @@ public class ApiTests {
         register
                 .setEmail("eve.holt@reqres.in")
                 .setPassword("pistol");
+
+        RegistrationResponsePojoModel response = given()
+                .spec(registrationRequestSpec)
+                .body(register)
+                .when()
+                .post()
+                .then()
+                .spec(registrationResponseSpec)
+                .extract()
+                .as(RegistrationResponsePojoModel.class);
+
+        assertThat(response.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
+        assertThat(response.getId()).isEqualTo(4);
+    }
+
+    @Test
+    void userRegistrationWithLombokTest() {
+
+        RegistrationBodyLombokModel register = new RegistrationBodyLombokModel();
+        register.setEmail("eve.holt@reqres.in");
+        register.setPassword("pistol");
 
         RegistrationResponsePojoModel response = given()
                 .spec(registrationRequestSpec)
