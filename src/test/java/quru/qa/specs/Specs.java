@@ -10,22 +10,22 @@ import static io.restassured.RestAssured.with;
 import static org.hamcrest.Matchers.notNullValue;
 import static quru.qa.helpers.CustomApiListener.withCustomTemplates;
 
-public class ListOfUsersSpec {
-
-
-    public static RequestSpecification listOfUsersRequestSpec = with()
+public class Specs {
+    public static RequestSpecification requestSpec = with()
             .filter(withCustomTemplates())
             .baseUri("https://reqres.in")
-            .basePath("api/users")
             .log().uri()
             .log().body()
             .contentType(ContentType.JSON);
 
-
-    public static ResponseSpecification listOfUsersResponseSpec = new ResponseSpecBuilder()
-            .expectStatusCode(200)
+    public static ResponseSpecification responseSpec = new ResponseSpecBuilder()
             .log(LogDetail.STATUS)
             .log(LogDetail.BODY)
             .build();
 
+    public static ResponseSpecification responseSpecToken = new ResponseSpecBuilder()
+            .log(LogDetail.STATUS)
+            .log(LogDetail.BODY)
+            .expectBody("token", notNullValue())
+            .build();
 }
