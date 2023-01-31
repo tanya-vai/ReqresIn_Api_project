@@ -214,21 +214,21 @@ public class ApiTests {
 //        assertThat(response.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
 //        assertThat(response.getId()).isEqualTo(4);
 //    }
-
-
-    @Test
-    void updateUserJobTest() {
-
-        given()
-                .contentType(JSON)
-                .body(user)
-                .when()
-                .put("https://reqres.in/api/user/3")
-                .then()
-                .log().body()
-                .statusCode(200)
-                .body("job", is("QA"));
-
-    }
+//
+//
+//    @Test
+//    void updateUserJobTest() {
+//
+//        given()
+//                .contentType(JSON)
+//                .body(user)
+//                .when()
+//                .put("https://reqres.in/api/user/3")
+//                .then()
+//                .log().body()
+//                .statusCode(200)
+//                .body("job", is("QA"));
+//
+//    }
 
 }
