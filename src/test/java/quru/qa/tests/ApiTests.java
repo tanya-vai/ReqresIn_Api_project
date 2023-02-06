@@ -5,16 +5,12 @@ import org.junit.jupiter.api.Test;
 import quru.qa.models.lombok.*;
 import quru.qa.models.pojo.RegistrationBodyPojoModel;
 import quru.qa.models.pojo.RegistrationResponsePojoModel;
-import quru.qa.models.pojo.UserBodyPojoModel;
 
 import java.io.File;
 
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
 
 import static quru.qa.specs.Specs.*;
 
@@ -31,25 +27,26 @@ public class ApiTests {
                 .setEmail("eve.holt@reqres.in")
                 .setPassword("pistol");
 
-        RegistrationResponsePojoModel response =  step("User registration", () ->
+        RegistrationResponsePojoModel response = step("User registration", () ->
                 given().spec(requestSpec)
-                .body(register)
-                .when()
-                .post("/api/register")
-                .then()
-                .spec(responseSpecToken)
-                .extract()
-                .as(RegistrationResponsePojoModel.class));
+                        .body(register)
+                        .when()
+                        .post("/api/register")
+                        .then()
+                        .spec(responseSpecToken)
+                        .extract()
+                        .as(RegistrationResponsePojoModel.class));
 
         step("Check that user is registered", () -> {
-        assertThat(response.getToken()).isNotNull();
-        assertThat(response.getId()).isNotNull();
+            assertThat(response.getToken()).isNotNull();
+            assertThat(response.getId()).isNotNull();
         });
     }
+
     @Test
     @DisplayName("Check user authorization")
     void checkUserAuthTest() {
-        LoginBodyLombokModel login = new  LoginBodyLombokModel();
+        LoginBodyLombokModel login = new LoginBodyLombokModel();
         login.setEmail("eve.holt@reqres.in");
         login.setPassword("pistol");
 
@@ -98,8 +95,8 @@ public class ApiTests {
     @DisplayName("Check user creation")
     void checkUserCreationTest() {
         UserBodyLombokModel user = new UserBodyLombokModel();
-                user.setName("Tanya");
-                user.setJob("QA");
+        user.setName("Tanya");
+        user.setJob("QA");
 
         userResponseModel response = step("Create a new user ", () ->
                 given().spec(requestSpec)
@@ -147,88 +144,12 @@ public class ApiTests {
     void notFoundUserTest() {
 
         step("Check that that searched user isn't found", () ->
-        given().spec(requestSpec)
-                .when()
-                .get("/api/users/55")
-                .then()
-                .spec(responseSpec)
-                .statusCode(404));
+                given().spec(requestSpec)
+                        .when()
+                        .get("/api/users/55")
+                        .then()
+                        .spec(responseSpec)
+                        .statusCode(404));
     }
-
-
-//    @Test
-//    void createUserTest() {
-//
-//        UserBodyPojoModel body = new UserBodyPojoModel();
-//        body.setName("Tanya");
-//        body.setJob("QA");
-//
-//        given()
-//                .spec(creationRequestSpec)
-//                .body(body)
-//                .when()
-//                .post()
-//                .then()
-//                .spec(creationResponseSpec)
-//                .body("name", is(body.getName()),
-//                        "job", is(body.getJob()));
-//
-//    }
-//   @Test
-//    void createUserWithLombokTest() {
-//
-//        UserBodyLombokModel body = new UserBodyLombokModel();
-//        body.setName("Tanya");
-//        body.setJob("QA");
-//
-//        given()
-//                .spec(creationRequestSpec)
-//                .body(body)
-//                .when()
-//                .post()
-//                .then()
-//                .spec(creationResponseSpec)
-//                .body("name", is(body.getName()),
-//                        "job", is(body.getJob()));
-//
-//    }
-
-
-//    @Test
-//    void userRegistrationWithLombokTest() {
-//
-//        RegistrationBodyLombokModel register = new RegistrationBodyLombokModel();
-//        register.setEmail("eve.holt@reqres.in");
-//        register.setPassword("pistol");
-//
-//        RegistrationResponsePojoModel response = given()
-//                .spec(registrationRequestSpec)
-//                .body(register)
-//                .when()
-//                .post()
-//                .then()
-//                .spec(registrationResponseSpec)
-//                .extract()
-//                .as(RegistrationResponsePojoModel.class);
-//
-//        assertThat(response.getToken()).isEqualTo("QpwL5tke4Pnpja7X4");
-//        assertThat(response.getId()).isEqualTo(4);
-//    }
-//
-//
-//    @Test
-//    void updateUserJobTest() {
-//
-//        given()
-//                .contentType(JSON)
-//                .body(user)
-//                .when()
-//                .put("https://reqres.in/api/user/3")
-//                .then()
-//                .log().body()
-//                .statusCode(200)
-//                .body("job", is("QA"));
-//
-//    }
 
 }
